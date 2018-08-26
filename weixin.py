@@ -5,10 +5,10 @@ from wxpy import *
 import requests
 import time
 import datetime
-from urllib.request import urlopen
+from urllib import urlopen
 from bs4 import BeautifulSoup
 
-bot = Bot(console_qr=1, cache_path="botoo.pkl")
+bot = Bot(console_qr=2, cache_path="botoo.pkl")
 
 # bot = Bot()
 def zhihu():
@@ -86,28 +86,15 @@ def get_news():
 def send_4p():
     try:
         weather=tianqi_tokyo()
-        news=zhihu()
+        ribao=zhihu()
         # 给自己发消息
         # bot.self.send('Hello World!')
         # 你朋友的微信名称，不是备注，也不是微信帐号。
 
-
-        bot.self.send(ribao[0],ribao[1]+'\n'+
-            ribao[2],ribao[3]+'\n'+
-            ribao[4],ribao[5]+'\n'+
-            ribao[6],ribao[7]+'\n'+
-            ribao[8],ribao[9]+'\n'+
-            ribao[10],ribao[11]+'\n'+
-            ribao[12],ribao[13]+'\n'+
-            ribao[14],ribao[15]+'\n'+
-            ribao[16],ribao[17]+'\n'+
-            ribao[18],ribao[19]+'\n'+
-            ribao[20],ribao[21]+'\n'+
-            ribao[22],ribao[23]+'\n'+
-            ribao[24],ribao[25]+'\n'+
-            ribao[26],ribao[27]+'\n'+
-            ribao[28],ribao[29]+'\n')
-        bot.self.send(u"今天东京的天气是"+weather[2]+",最高气温是"+weather[1]+",最低气温是"+weather[0]+",注意天气变化哦，我是气温播报机器人Bot郁")
+        str = ribao[0]+ribao[1]+'\n'+ribao[2]+ribao[3]+'\n'+ribao[4]+ribao[5]+'\n'+ribao[6]+ribao[7]+'\n'+ribao[8]+ribao[9]+'\n'+ribao[10]+ribao[11]+'\n'+ribao[12]+ribao[13]+'\n'+ribao[14]+ribao[15]+'\n'+ribao[16]+ribao[17]+'\n'+ribao[18]+ribao[19]+'\n'+ribao[20]+ribao[21]+'\n'+ribao[22]+ribao[23]+'\n'+ribao[24]+ribao[25]+'\n'+ribao[26]+ribao[27]+'\n'+ribao[28]+ribao[29]
+        my_friend = bot.groups().search(u'三个臭皮匠和一个诸葛恩')[0]
+        my_friend.send(str)
+        my_friend.send(u"今天东京的天气是"+weather[2]+",最高气温是"+weather[1]+",最低气温是"+weather[0]+",注意天气变化哦，我是气温播报机器人Bot郁")
 
         # 每86400秒（1天），发送1次
         t = Timer(86400, send_4p)
@@ -121,23 +108,11 @@ def send_4p():
 def send_weizhong():
     try:
         weather_jn=tianqi_jn()
-        news=zhihu()
+        ribao=zhihu()
+        str = ribao[0]+ribao[1]+'\n'+ribao[2]+ribao[3]+'\n'+ribao[4]+ribao[5]+'\n'+ribao[6]+ribao[7]+'\n'+ribao[8]+ribao[9]+'\n'+ribao[10]+ribao[11]+'\n'+ribao[12]+ribao[13]+'\n'+ribao[14]+ribao[15]+'\n'+ribao[16]+ribao[17]+'\n'+ribao[18]+ribao[19]+'\n'+ribao[20]+ribao[21]+'\n'+ribao[22]+ribao[23]+'\n'+ribao[24]+ribao[25]+'\n'+ribao[26]+ribao[27]+'\n'+ribao[28]+ribao[29]
+
         my_friend = bot.groups().search(u'污师大本营')[0]
-        my_friend.send(ribao[0],ribao[1]+'\n'+
-            ribao[2],ribao[3]+'\n'+
-            ribao[4],ribao[5]+'\n'+
-            ribao[6],ribao[7]+'\n'+
-            ribao[8],ribao[9]+'\n'+
-            ribao[10],ribao[11]+'\n'+
-            ribao[12],ribao[13]+'\n'+
-            ribao[14],ribao[15]+'\n'+
-            ribao[16],ribao[17]+'\n'+
-            ribao[18],ribao[19]+'\n'+
-            ribao[20],ribao[21]+'\n'+
-            ribao[22],ribao[23]+'\n'+
-            ribao[24],ribao[25]+'\n'+
-            ribao[26],ribao[27]+'\n'+
-            ribao[28],ribao[29]+'\n')
+        my_friend.send(str)
         my_friend.send(u"今天君安的天气是"+weather_jn+",注意天气变化哦，我是气温播报机器人Bot郁")
         t=Timer(86400,send_weizhong)
         t.start()
@@ -166,8 +141,8 @@ def send_gf():
 
 
 def morning():
-    h = 18
-    m = 40
+    h = 07
+    m = 00
 
     while True:
         now = datetime.datetime.now()
@@ -182,7 +157,12 @@ def morning():
 def chat():
     if __name__ == "__main__":
         send_4p()
+        send_gf()
+        send_weizhong()
 
 
 
 morning()
+
+
+#send_4p()
