@@ -74,6 +74,18 @@ def tianqi_jn():
 
     return tianqi
 
+
+def tianqi_cili():
+    html = urlopen('http://www.tianqi.com/xiamen/15/')
+    bs_obj = BeautifulSoup(html.read(), 'html.parser')
+    tanki = bs_obj("li", "temp")
+
+    tanki_today=tanki[0]
+
+    tianqi=tanki_today.get_text()
+
+    return tianqi
+
 def get_news():
     url = "http://open.iciba.com/dsapi/"
     r = requests.get(url)
@@ -113,7 +125,7 @@ def send_weizhong():
 
         my_friend = bot.groups().search(u'污师大本营')[0]
         my_friend.send(str)
-        my_friend.send(u"今天君安的天气是"+weather_jn+",注意天气变化哦，我是气温播报机器人Bot郁")
+        my_friend.send(u"今天君安的天气是"+weather_jn+",注意天气变化哦，我是气温播报AI Robot郁")
         t=Timer(86400,send_weizhong)
         t.start()
     except:
@@ -128,7 +140,7 @@ def send_gf():
         my_friend = bot.friends().search(u'地塬-')[0]
         my_friend.send(contents[0])
         my_friend.send(contents[1])
-        my_friend.send(u"早安~~早饭要吃哦")
+        my_friend.send(u"早安朱宝~~早饭要吃好哦")
         my_friend.send(u"今天当地的天气是"+weather_gf[2]+",最高气温是"+weather_gf[1]+",最低气温是"+weather_gf[0]+"注意天气变化哦，爱你的昆")
 
 
@@ -137,6 +149,41 @@ def send_gf():
     except:
         my_friend = bot.friends().search('肉松君')[0]
         my_friend.send(u"下午消息发送失败了")
+
+        
+
+def send_family():
+    try:
+        weather_jn=tianqi_jn()
+        ribao=zhihu()
+        str = ribao[0]+ribao[1]+'\n'+ribao[2]+ribao[3]+'\n'+ribao[4]+ribao[5]+'\n'+ribao[6]+ribao[7]+'\n'+ribao[8]+ribao[9]+'\n'+ribao[10]+ribao[11]+'\n'+ribao[12]+ribao[13]+'\n'+ribao[14]+ribao[15]+'\n'+ribao[16]+ribao[17]+'\n'+ribao[18]+ribao[19]+'\n'+ribao[20]+ribao[21]+'\n'+ribao[22]+ribao[23]+'\n'+ribao[24]+ribao[25]+'\n'+ribao[26]+ribao[27]+'\n'+ribao[28]+ribao[29]
+
+        my_friend = bot.groups().search(u'郁氏集团')[0]
+        my_friend.send(str)
+        my_friend.send(u"今天莒南的天气是"+weather_jn+",注意天气变化哦，我是气温播报AI Robot郁")
+        t=Timer(86400,send_weizhong)
+        t.start()
+    except:
+        my_friend = bot.friends().search('肉松君')[0]
+        my_friend.send(u"今天消息发送失败了")
+
+
+def send_ayi():
+    try:
+        ribao=zhihu()
+        str = ribao[0]+ribao[1]+'\n'+ribao[2]+ribao[3]+'\n'+ribao[4]+ribao[5]+'\n'+ribao[6]+ribao[7]+'\n'+ribao[8]+ribao[9]+'\n'+ribao[10]+ribao[11]+'\n'+ribao[12]+ribao[13]+'\n'+ribao[14]+ribao[15]+'\n'+ribao[16]+ribao[17]+'\n'+ribao[18]+ribao[19]+'\n'+ribao[20]+ribao[21]+'\n'+ribao[22]+ribao[23]+'\n'+ribao[24]+ribao[25]+'\n'+ribao[26]+ribao[27]+'\n'+ribao[28]+ribao[29]
+        weather_cili = tianqi_cili()
+        my_friend = bot.friends().search(u'雨后的早晨')[0]
+        my_friend.send(str)
+        my_friend.send(u"阿姨早上好!今天厦门的天气是" + weather_cili + ",注意天气变化哦")
+
+
+        t = Timer(86400, send_gf)
+        t.start()
+    except:
+        my_friend = bot.friends().search('肉松君')[0]
+        my_friend.send(u"下午消息发送失败了")
+
 
 
 
@@ -159,6 +206,8 @@ def chat():
         send_4p()
         send_gf()
         send_weizhong()
+        send_family()
+        send_ayi()
 
 
 
