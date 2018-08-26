@@ -5,11 +5,74 @@ from wxpy import *
 import requests
 import time
 import datetime
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
 
 bot = Bot(console_qr=1, cache_path="botoo.pkl")
 
 # bot = Bot()
+def zhihu():
+    html=urlopen('https://daily.zhihu.com/') #打开url，获取内容
+    #把html内容传到BeautifulSoup对象
+    bs_obj =BeautifulSoup(html.read(), 'html.parser')
+    #找到所有带有link-button的a标签
+    text_list =bs_obj.find_all("a", "link-button")
+    #print(text_list)
 
+    #创建日报的list
+    ribao = []
+    #遍历日报内容
+    for text in text_list:
+        #print("***===========================***\n"+text.get_text())
+        #print("https://daily.zhihu.com"+text.get("href"))
+        ribao.append(text.get_text()) #添加日报标题到list中
+        ribao.append("https://daily.zhihu.com"+text.get("href"))#添加日报
+    html.close()
+    return ribao
+
+
+def tianqi_tokyo():
+    html = urlopen('https://weather.yahoo.co.jp/weather/jp/13/4410.html')
+    bs_obj = BeautifulSoup(html.read(), 'html.parser')
+    low = bs_obj("li", "low")
+    high = bs_obj("li","high")
+    tanki = bs_obj("p", "pict")
+
+    low_today=low[0]
+    high_today=high[0]
+    tanki_today=tanki[0]
+    low_temp=low_today.get_text()
+    high_temp=high_today.get_text()
+    tianqi=tanki_today.get_text()
+
+    return low_temp,high_temp,tianqi
+
+def tianqi_gf():
+    html = urlopen('https://weather.yahoo.co.jp/weather/jp/37/7200.html')
+    bs_obj = BeautifulSoup(html.read(), 'html.parser')
+    low = bs_obj("li", "low")
+    high = bs_obj("li","high")
+    tanki = bs_obj("p", "pict")
+
+    low_today=low[0]
+    high_today=high[0]
+    tanki_today=tanki[0]
+    low_temp=low_today.get_text()
+    high_temp=high_today.get_text()
+    tianqi=tanki_today.get_text()
+
+    return low_temp,high_temp,tianqi
+
+def tianqi_jn():
+    html = urlopen('http://www.tianqi.com/junan/15/')
+    bs_obj = BeautifulSoup(html.read(), 'html.parser')
+    tanki = bs_obj("li", "temp")
+
+    tanki_today=tanki[0]
+
+    tianqi=tanki_today.get_text()
+
+    return tianqi
 
 def get_news():
     url = "http://open.iciba.com/dsapi/"
@@ -19,19 +82,35 @@ def get_news():
     return content, note
 
 
-def send_news1():
+
+def send_4p():
     try:
-        contents = get_news()
+        weather=tianqi_tokyo()
+        news=zhihu()
         # 给自己发消息
         # bot.self.send('Hello World!')
         # 你朋友的微信名称，不是备注，也不是微信帐号。
 
-        my_friend = bot.friends().search(u'地塬-')[0]
-        my_friend.send(contents[0])
-        my_friend.send(contents[1])
-        my_friend.send(u"早安~~早饭要吃哦")
+
+        bot.self.send(ribao[0],ribao[1]+'\n'+
+            ribao[2],ribao[3]+'\n'+
+            ribao[4],ribao[5]+'\n'+
+            ribao[6],ribao[7]+'\n'+
+            ribao[8],ribao[9]+'\n'+
+            ribao[10],ribao[11]+'\n'+
+            ribao[12],ribao[13]+'\n'+
+            ribao[14],ribao[15]+'\n'+
+            ribao[16],ribao[17]+'\n'+
+            ribao[18],ribao[19]+'\n'+
+            ribao[20],ribao[21]+'\n'+
+            ribao[22],ribao[23]+'\n'+
+            ribao[24],ribao[25]+'\n'+
+            ribao[26],ribao[27]+'\n'+
+            ribao[28],ribao[29]+'\n')
+        bot.self.send(u"今天东京的天气是"+weather[2]+",最高气温是"+weather[1]+",最低气温是"+weather[0]+",注意天气变化哦，我是气温播报机器人Bot郁")
+
         # 每86400秒（1天），发送1次
-        t = Timer(86400, send_news1)
+        t = Timer(86400, send_4p)
         t.start()
     except:
         # 你的微信名称，不是微信帐号。
@@ -39,42 +118,56 @@ def send_news1():
         my_friend.send(u"早间新闻发送失败了")
 
 
-def send2():
+def send_weizhong():
     try:
-        my_friend = bot.friends().search(u'地塬-')[0]
-        my_friend.send(u"中午记得吃饭，注意防晒")
-        t=Timer(86400,send2)
+        weather_jn=tianqi_jn()
+        news=zhihu()
+        my_friend = bot.groups().search(u'污师大本营')[0]
+        my_friend.send(ribao[0],ribao[1]+'\n'+
+            ribao[2],ribao[3]+'\n'+
+            ribao[4],ribao[5]+'\n'+
+            ribao[6],ribao[7]+'\n'+
+            ribao[8],ribao[9]+'\n'+
+            ribao[10],ribao[11]+'\n'+
+            ribao[12],ribao[13]+'\n'+
+            ribao[14],ribao[15]+'\n'+
+            ribao[16],ribao[17]+'\n'+
+            ribao[18],ribao[19]+'\n'+
+            ribao[20],ribao[21]+'\n'+
+            ribao[22],ribao[23]+'\n'+
+            ribao[24],ribao[25]+'\n'+
+            ribao[26],ribao[27]+'\n'+
+            ribao[28],ribao[29]+'\n')
+        my_friend.send(u"今天君安的天气是"+weather_jn+",注意天气变化哦，我是气温播报机器人Bot郁")
+        t=Timer(86400,send_weizhong)
         t.start()
     except:
         my_friend = bot.friends().search('肉松君')[0]
         my_friend.send(u"今天消息发送失败了")
 
 
-def send3():
+def send_gf():
     try:
+        contents = get_news()
+        weather_gf = tianqi_gf()
         my_friend = bot.friends().search(u'地塬-')[0]
-        my_friend.send(u"吃饭了么记得早点吃晚饭")
-        t = Timer(86400, send2)
+        my_friend.send(contents[0])
+        my_friend.send(contents[1])
+        my_friend.send(u"早安~~早饭要吃哦")
+        my_friend.send(u"今天当地的天气是"+weather_gf[2]+",最高气温是"+weather_gf[1]+",最低气温是"+weather_gf[0]+"注意天气变化哦，爱你的昆")
+
+
+        t = Timer(86400, send_gf)
         t.start()
     except:
         my_friend = bot.friends().search('肉松君')[0]
         my_friend.send(u"下午消息发送失败了")
 
 
-def send4():
-    try:
-        my_friend = bot.friends().search(u'地塬-')[0]
-        my_friend.send(u"我睡觉了晚安，好梦，么么哒")
-        t = Timer(86400, send2)
-        t.start()
-    except:
-        my_friend = bot.friends().search('肉松君')[0]
-        my_friend.send(u"晚间消息失败了")
-
 
 def morning():
-    h = 07
-    m = 10
+    h = 18
+    m = 40
 
     while True:
         now = datetime.datetime.now()
@@ -84,71 +177,12 @@ def morning():
     chat()
 
 
-def noon():
-    h = 12
-    m = 22
-
-    while True:
-        now = datetime.datetime.now()
-        if now.hour == h and now.minute == m:
-            break
-        time.sleep(20)
-    chat2()
-
-
-def evening():
-    h = 18
-    m = 45
-
-    while True:
-        now = datetime.datetime.now()
-        if now.hour == h and now.minute == m:
-            break
-        time.sleep(20)
-    chat3()
-
-
-def night():
-    h = 00
-    m = 59
-
-    while True:
-        now = datetime.datetime.now()
-        if now.hour == h and now.minute == m:
-            break
-        time.sleep(20)
-    chat4()
-
-
-#time.strftime("%H:%M:%S")
-#cur=datetime.datetime.now()
 
 
 def chat():
     if __name__ == "__main__":
-        send_news1()
+        send_4p()
 
-
-def chat2():
-    if __name__ == "__main__":
-        send2()
-
-
-def chat3():
-    if __name__ == "__main__":
-        send3()
-
-
-def chat4():
-    if __name__ == "__main__":
-        send4()
 
 
 morning()
-
-noon()
-
-evening()
-
-night()
-
